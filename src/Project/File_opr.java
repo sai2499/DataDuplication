@@ -1,6 +1,7 @@
 package Project;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,10 +16,22 @@ public class File_opr
 	}
 	public static void createOriginal(String[] sha256,String fileName) throws Exception
 	{
+		String str;
+		String str1=" ";
 		for(int i=0;i<sha256.length;i++)
 		{
-
+			String chuckName="chunks/"+sha256[i];
+			 File file=new File(chuckName);
+			 BufferedReader br=new BufferedReader(new FileReader(file));
+			 while((str=br.readLine())!=null)
+			 {
+			 	str1=str1+str;
+			 }
 		}
+		String finalName="download/"+fileName;
+		FileWriter fw=new FileWriter(finalName);
+		fw.write(str1);
+		fw.close();
 	}
 
 }
