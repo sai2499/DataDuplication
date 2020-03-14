@@ -89,7 +89,7 @@ public class mainFile {
 			uploadFile.insertIntoUserFile(userId);
 			break;
 		case 2:
-			downloadFile.download();
+			downloadFile.download(userId);
 			break;
 		case 3:
 			//deleteData.deleteFile();
