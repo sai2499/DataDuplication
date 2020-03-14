@@ -20,6 +20,7 @@ public class uploadFile extends mainFile
 	public static Scanner sc=null;
 	public static void insertIntoUserFile(int Userid) throws Exception
 	{
+		System.out.println("Enter the name of the file: ");
 		sc = new Scanner(System.in);
 		fileName=sc.next();
 		con=new connectionDatabase();

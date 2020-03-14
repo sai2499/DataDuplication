@@ -57,8 +57,10 @@ public class mainFile {
 				String query = "INSERT INTO userTable (userName,passWord,emailId) VALUES('"
 								+ name + "' , '" + passWord +"' , '"
 								+ email + "');";
+				String query1="insert into login (userName,passWord) values ('"+ name + "' , '" + passWord +"');";
 				connectionDatabase c = new connectionDatabase();
 				c.runQuery(query);
+				c.runQuery(query1);
 				PreparedStatement pstmt=c.getConnect().prepareStatement("select userId from userTable where userName=?");
 				pstmt.setString(1,name);
 				ResultSet rst=pstmt.executeQuery();
@@ -87,7 +89,7 @@ public class mainFile {
 			uploadFile.insertIntoUserFile(userId);
 			break;
 		case 2:
-//			downloadFile.download();
+			downloadFile.download();
 			break;
 		case 3:
 			//deleteData.deleteFile();

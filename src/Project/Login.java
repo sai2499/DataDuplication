@@ -9,7 +9,7 @@ public class Login {
 	{		
 		connectionDatabase c = new connectionDatabase();
 		Statement stmt = null;
-		String query="SELECT * FROM login WHERE username = '"+ user + "' AND passwords = '" + pass + "'";
+		String query="SELECT * FROM login WHERE username = '"+ user + "' AND passWord = '" + pass + "'";
 		System.out.println(query);
 		try
 		{
