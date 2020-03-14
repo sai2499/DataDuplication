@@ -20,7 +20,7 @@ public class createChunk extends uploadFile
 		InputStream is;
 		
 		
-		public void createChunks() throws IOException 
+		public void createChunks(int fileId) throws IOException
 		{
 			int mask = 1 << 13;
 			mult = 1;
@@ -56,7 +56,7 @@ public class createChunk extends uploadFile
 							ArrayList<String> arrr = new ArrayList<String>(Arrays.asList(hashIn256));
 							map.put(hash, arrr);
 //							String ars = String.join(",", arrr);
-							Insertquery.append("(" + hash + " , '" + hashIn256 + "' ),");
+							Insertquery.append("(" +fileId+","+ hash + " , '" + hashIn256 + "' ),");
 //							insertDb.insertInHashTable(hash, ars);
 //							System.out.println(counter++ +"=> NO hash\tNO 256\t" +"  =>  "+hash + "\tsha256\t"+hashIn256);
 							File_opr.createFile(hash,string_w.toString(),hashIn256);
@@ -67,7 +67,7 @@ public class createChunk extends uploadFile
 							map.get(hash).add(hashIn256);
 							ArrayList<String> arrr = (ArrayList<String>) map.get(hash);
 							String ars = String.join(",", arrr);
-							Insertquery.append("(" + hash + "," + hashIn256 + "),");
+							Insertquery.append("(" + fileId+","+hash + "," + hashIn256 + "),");
 //							insertDb.updateInHashTable(hash, ars);
 //							System.out.println(counter++ +"=> YES hash\tNO 256\t" +"  =>  "+hash + "\tsha256\t"+hashIn256);
 							File_opr.createFile(hash,string_w.toString(),hashIn256);

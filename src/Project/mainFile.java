@@ -84,7 +84,7 @@ public class mainFile {
 		switch(ch)
 		{
 		case 1:
-			uploadFile.upload(userId);
+			uploadFile.insertIntoUserFile(userId);
 			break;
 		case 2:
 //			downloadFile.download();
