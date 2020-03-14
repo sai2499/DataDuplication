@@ -92,10 +92,10 @@ public class mainFile {
 			downloadFile.download(userId);
 			break;
 		case 3:
-			//deleteData.deleteFile();
+			deleteData.deleteFile(userId);
 			break;
 		case 4:
-			//deleteData.deleteUser();
+			deleteData.deleteUser(userId);
 			break;
 		case 5:
 			//uploadFile.update();
