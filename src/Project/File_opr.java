@@ -1,9 +1,8 @@
 package Project;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class File_opr
 {
@@ -14,15 +13,12 @@ public class File_opr
 		fw.write(word);
 		fw.close();
 	}
-	public static void createOriginal(String[] sha256)
+	public static void createOriginal(String[] sha256,String fileName) throws Exception
 	{
 		for(int i=0;i<sha256.length;i++)
 		{
-			String filename="chucks/"+sha256[i];
-			File file=new File(filename);
-			//BufferedReader bfr
-		}
 
+		}
 	}
 
 }

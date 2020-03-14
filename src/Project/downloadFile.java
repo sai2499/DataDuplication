@@ -18,7 +18,7 @@ public class downloadFile extends mainFile
         int fileId=retrieveFileId(UserId,fileName);
         Integer[] shaId=retrieveShaId(fileId);
         String[] sha256=retrieveSha(shaId);
-        File_opr.createOriginal(sha256);
+        File_opr.createOriginal(sha256,fileName);
     }
     public static String showFiles(int UserId) throws Exception
     {
