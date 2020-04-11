@@ -7,6 +7,7 @@ public class deleteData
     public static connectionDatabase con=null;
     public static Scanner sc=null;
     public static RetrieveIDs rid=null;
+    
     public static void deleteFile(int UserId) throws Exception
     {
         System.out.println("---------------------------Download File---------------------------");

@@ -1,26 +1,23 @@
 package Project;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 public class createChunk extends uploadFile
 {
 
-		
+		public connectionDatabase con = null;
 		public final int hconst = 69069; // good hash multiplier for MOD 2^32
 		public int mult; // this will hold the p^n value
 		int[] buffer; // circular buffer - reading from file stream
 		int buffptr;
+		Map<String,Integer> map4Count = new HashMap<>();
 		StringBuilder string_w = new StringBuilder();
 		InputStream is;
 		
 		
-		public void createChunks(int fileId) throws IOException
+		public void createChunks(int fileId) throws Exception
 		{
 			int mask = 1 << 13;
 			mult = 1;
@@ -28,8 +25,7 @@ public class createChunk extends uploadFile
 			mask--; // 13 bit of '1's
 			File f = new File(fileLocation);
 			FileInputStream fs;
-			try 
-			{
+			con = new connectionDatabase();
 				fs = new FileInputStream(f);
 				BufferedInputStream bis = new BufferedInputStream(fs);	// BufferedInputStream is faster to read byte-by-byte from
 				this.is = bis;
@@ -41,6 +37,7 @@ public class createChunk extends uploadFile
 				Integer hash = inithash(1024-1,0);
 				curr -= bis.available();
 				System.out.println("CURRENT SIZE OF CURR : " + curr);
+				PreparedStatement insertQuery = con.getConnect().prepareStatement("Insert into Hashtable (userFileId,rollHash,sha256) values (?,?,?)");
 				while (curr < length) 
 				{
 					if ((hash & mask) == 0 || curr==length-1)
@@ -48,28 +45,31 @@ public class createChunk extends uploadFile
 						// window found - hash it, 
 						// compare it to the other file chunk list
 						byte[] wordArray = string_w.toString().getBytes(); 
-						String hashIn256=sha256hash.getHash256(wordArray);
+						String hashIn256 = sha256hash.getHash256(wordArray);
 
 						array_of_file_sha.add(hashIn256);
 						if(!map.containsKey(hash))
 						{
 							ArrayList<String> arrr = new ArrayList<String>(Arrays.asList(hashIn256));
 							map.put(hash, arrr);
-//							String ars = String.join(",", arrr);
-							Insertquery.append("(" +fileId+","+ hash + " , '" + hashIn256 + "' ),");
-//							insertDb.insertInHashTable(hash, ars);
-//							System.out.println(counter++ +"=> NO hash\tNO 256\t" +"  =>  "+hash + "\tsha256\t"+hashIn256);
+//							String ars = String.join(",", arrr)
+//							Insertquery.append("(" +fileId+","+ hash + " , '" + hashIn256 + "'),");
+							insertQuery.setInt(1,fileId);
+							insertQuery.setInt(2,hash);
+							insertQuery.setString(3,hashIn256);
+							insertQuery.addBatch();
 							File_opr.createFile(hash,string_w.toString(),hashIn256);
-//							System.out.println(arrr);
 						}
 						else if(!map.get(hash).contains(hashIn256))
 						{
 							map.get(hash).add(hashIn256);
 							ArrayList<String> arrr = (ArrayList<String>) map.get(hash);
 							String ars = String.join(",", arrr);
-							Insertquery.append("(" + fileId+","+hash + "," + hashIn256 + "),");
-//							insertDb.updateInHashTable(hash, ars);
-//							System.out.println(counter++ +"=> YES hash\tNO 256\t" +"  =>  "+hash + "\tsha256\t"+hashIn256);
+//							Insertquery.append("(" + fileId + ","+hash + "," + hashIn256 + "),");
+							insertQuery.setInt(1,fileId);
+							insertQuery.setInt(2,hash);
+							insertQuery.setString(3,hashIn256);
+							insertQuery.addBatch();
 							File_opr.createFile(hash,string_w.toString(),hashIn256);
 						}
 						else
@@ -77,37 +77,43 @@ public class createChunk extends uploadFile
 							System.out.println(counter++ +"=> YES hash\tYES 256\t" +"  =>  "+hash + "\tsha256\t"+hashIn256);
 						}
 
-						
-						if(!map4count.containsKey(hashIn256))
-						{
-							map4count.put(hashIn256, 1);
-//							insertDb.insertInShaCount(hashIn256, 1);
-						}else
-						{
-							int count = map4count.get(hashIn256);
-							map4count.replace(hashIn256, count, count+1);
-//							insertDb.updateInShaCount(hashIn256, count+1);
-
-						}
-						
-						
-						
 						string_w.setLength(0);;
 					}
-					// next window's hash  //
+
 					hash = nexthash(hash);
 					curr++;
 				}
 				
 				String string_of_file_sha = String.join(",",array_of_file_sha);
-//				insertDb.insertInFileDetails(fileName, string_of_file_sha);
+				//INSERTING VALUE IN HASHTABLE
+				int[] executeRecords = insertQuery.executeBatch();
+				PreparedStatement InsertCount = con.getConnect().prepareStatement("Insert into shaTable values (? , ?)");
+				PreparedStatement updateCount = con.getConnect().prepareStatement("update shaTable set shacount = ? where sha256Value = ?");
+				getshaCount();
+				//INSERTING COUNTS
+				for(int i = 0 ; i < array_of_file_sha.size() ; i++)
+				{
+					boolean res = isAvailsha(array_of_file_sha.get(i));
+					if(res)
+					{
+//						UPDATE COUNT
+						int count = map4Count.get(array_of_file_sha.get(i));
+						updateCount.setInt(1 , ++count);
+						updateCount.setString(2 , array_of_file_sha.get(i));
+						updateCount.addBatch();
+					}
+					else
+					{
+						InsertCount.setString(1,array_of_file_sha.get(i));
+						InsertCount.setInt(2,1);
+						InsertCount.addBatch();
+					}
+				}
+				System.out.println(array_of_file_sha);
+				int[] insertexec = InsertCount.executeBatch();
+				int[] updateexec = updateCount.executeBatch();
+
 				array_of_file_sha.clear();
-			
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
 		}
 	
 		public int nexthash(int prevhash) throws IOException
@@ -144,4 +150,36 @@ public class createChunk extends uploadFile
 			}
 			return hash ;
 		}
+
+		public void getshaCount() throws Exception
+		{
+			con = new connectionDatabase();
+			PreparedStatement pstmt = con.getConnect().prepareStatement("select * from shaTable");
+			ResultSet rs = pstmt.executeQuery();
+			if(rs != null)
+			{
+				while(rs.next())
+				{
+					System.out.println(rs.getString(1));
+					map4Count.put(rs.getString(1) , rs.getInt(2));
+				}
+			}
+			else
+			{
+				System.out.println("SHA TABLE EMPTY");
+			}
+		}
+
+		public boolean isAvailsha(String hashIn256)
+		{
+			if(map4Count.containsKey(hashIn256))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 }
