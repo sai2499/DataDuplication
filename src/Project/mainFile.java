@@ -57,7 +57,7 @@ public class mainFile {
 				String query = "INSERT INTO userTable (userName,passWord,emailId) VALUES('"
 								+ name + "' , '" + passWord +"' , '"
 								+ email + "');";
-				String query1="insert into login (userName,passWord) values ('"+ name + "' , '" + passWord +"');";
+				String query1="insert into login (userName,passwords) values ('"+ name + "' , '" + passWord +"');";
 				connectionDatabase c = new connectionDatabase();
 				c.runQuery(query);
 				c.runQuery(query1);
