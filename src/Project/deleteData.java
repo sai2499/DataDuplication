@@ -1,5 +1,7 @@
 package Project;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 
 public class deleteData
@@ -9,13 +11,13 @@ public class deleteData
     public static RetrieveIDs rid=null;
     public static void deleteFile(int UserId) throws Exception
     {
-        System.out.println("---------------------------Download File---------------------------");
+        System.out.println("---------------------------Delete File---------------------------");
         System.out.println("Files you have: ");
         String fileName=rid.showFiles(UserId);
         int fileId=rid.retrieveFileId(UserId,fileName);
         Integer[] shaId=rid.retrieveShaId(fileId);
         String[] sha256=rid.retrieveSha(shaId);
-    }
+   }
     public static void deleteUser(int userId) throws Exception
     {
 
