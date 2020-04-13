@@ -2,13 +2,13 @@ package Project;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class RetrieveIDs
 {
     public static connectionDatabase con=null;
     public static Scanner sc=null;
+    public static Map<String,Integer> countmap=new HashMap<>();
     public static Integer[] retrieveShaId(int fileId) throws Exception
     {
         con=new connectionDatabase();

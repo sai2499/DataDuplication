@@ -54,7 +54,7 @@ public class mainFile {
 				String passWord=sc.next();
 				System.out.println("Enter the email: ");
 				String email=sc.next();
-				String query = "INSERT INTO userTable (userName,passWord,emailId) VALUES('"
+				String query = "INSERT INTO userTable (userName,passwords,emailId) VALUES('"
 								+ name + "' , '" + passWord +"' , '"
 								+ email + "');";
 				String query1="insert into login (userName,passwords) values ('"+ name + "' , '" + passWord +"');";
