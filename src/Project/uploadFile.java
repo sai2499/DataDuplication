@@ -1,33 +1,21 @@
 package Project;
-
-//import java.util.*;
-import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-
-
+import java.sql.*;
+import java.util.*;
 public class uploadFile extends mainFile
 {
 	public static connectionDatabase con = null;
 	public static String fileLocation;
 	public static String fileName;
-	public static ArrayList<String> array_of_file_sha = new ArrayList<>();;
-//	public static StringBuilder Insertquery = new StringBuilder("Insert into Hashtable (userFileId,rollHash,sha256) values ");
-
+	public static ArrayList<String> array_of_file_sha = new ArrayList<>();
 	public static Scanner sc=null;
-
-	public static void insertIntoUserFile(int Userid) throws Exception
+	public static void insertIntoUserFile(int userId) throws Exception
 	{
 		System.out.println("Enter the name of the file: ");
 		sc = new Scanner(System.in);
 		fileName=sc.next();
 		con=new connectionDatabase();
 		PreparedStatement pstmt=con.getConnect().prepareStatement("insert into userFile (userId,fileName) values(?,?)");
-		pstmt.setInt(1,Userid);
+		pstmt.setInt(1,userId);
 		pstmt.setString(2,fileName);
 		pstmt.executeUpdate();
 		int fileId=retrieveFileId(fileName);
@@ -44,9 +32,6 @@ public class uploadFile extends mainFile
 		{
 			fileLocation = "file/"+fileName;
 			d.createChunks(fileId);
-
-//			Insertquery.deleteCharAt(Insertquery.length()-1);
-//			insertQueryToDb();
 			System.out.println("--------------------------FILE "+i+"--------------------------------------------");		
 		}
 		System.out.println("Thank You: Files Uploaded");
@@ -94,12 +79,5 @@ public class uploadFile extends mainFile
 		return arrId;
 	}
 
-//	public static void insertQueryToDb() throws Exception
-//	{
-//		con = new connectionDatabase();
-//		Statement stmt = null;
-//		stmt = con.getConnect().createStatement();
-//		stmt.execute(Insertquery.toString());
-//		con.closeConnection(con, stmt);
-//	}
+
 }

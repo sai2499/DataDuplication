@@ -2,7 +2,8 @@ package Project;
 
 import java.security.MessageDigest;
 
-public class sha256hash {
+public class sha256hash
+{
 	public static String getHash256(byte[] inputBytes)
 	{
 		String hash256calc = new String();

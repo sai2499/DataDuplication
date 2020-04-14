@@ -52,8 +52,6 @@ public class createChunk extends uploadFile
 						{
 							ArrayList<String> arrr = new ArrayList<String>(Arrays.asList(hashIn256));
 							map.put(hash, arrr);
-//							String ars = String.join(",", arrr)
-//							Insertquery.append("(" +fileId+","+ hash + " , '" + hashIn256 + "'),");
 							insertQuery.setInt(1,fileId);
 							insertQuery.setInt(2,hash);
 							insertQuery.setString(3,hashIn256);
@@ -65,7 +63,6 @@ public class createChunk extends uploadFile
 							map.get(hash).add(hashIn256);
 							ArrayList<String> arrr = (ArrayList<String>) map.get(hash);
 							String ars = String.join(",", arrr);
-//							Insertquery.append("(" + fileId + ","+hash + "," + hashIn256 + "),");
 							insertQuery.setInt(1,fileId);
 							insertQuery.setInt(2,hash);
 							insertQuery.setString(3,hashIn256);
@@ -89,11 +86,11 @@ public class createChunk extends uploadFile
 				int[] executeRecords = insertQuery.executeBatch();
 				PreparedStatement InsertCount = con.getConnect().prepareStatement("Insert into shaTable values (? , ?)");
 				PreparedStatement updateCount = con.getConnect().prepareStatement("update shaTable set shacount = ? where sha256Value = ?");
-				getshaCount();
+				getShaCount();
 				//INSERTING COUNTS
 				for(int i = 0 ; i < array_of_file_sha.size() ; i++)
 				{
-					boolean res = isAvailsha(array_of_file_sha.get(i));
+					boolean res = isAvailSha(array_of_file_sha.get(i));
 					if(res)
 					{
 //						UPDATE COUNT
@@ -110,8 +107,8 @@ public class createChunk extends uploadFile
 					}
 				}
 				System.out.println(array_of_file_sha);
-				int[] insertexec = InsertCount.executeBatch();
-				int[] updateexec = updateCount.executeBatch();
+				int[] insertExec = InsertCount.executeBatch();
+				int[] updateExec = updateCount.executeBatch();
 
 				array_of_file_sha.clear();
 		}
@@ -151,7 +148,7 @@ public class createChunk extends uploadFile
 			return hash ;
 		}
 
-		public void getshaCount() throws Exception
+		public void getShaCount() throws Exception
 		{
 			con = new connectionDatabase();
 			PreparedStatement pstmt = con.getConnect().prepareStatement("select * from shaTable");
@@ -170,7 +167,7 @@ public class createChunk extends uploadFile
 			}
 		}
 
-		public boolean isAvailsha(String hashIn256)
+		public boolean isAvailSha(String hashIn256)
 		{
 			if(map4Count.containsKey(hashIn256))
 			{

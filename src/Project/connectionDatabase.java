@@ -4,15 +4,7 @@ import java.sql.*;
 import java.util.*;
 public class connectionDatabase
 {
-	//DATABASE CONNECTION MODULE
-	//static final String JDBC_DRIVER = "org.h2.Driver";
-	//static final String DB_URL = "jdbc:h2:~/FinalProject";
-	   //  Database credentials
-	//static final String USER = "sa";
-	//static final String PASS = "";
-	//================EXCEPTION HANDLING NOT DONE
-	Connection con;
-	Statement stmt;
+	public Connection con=null;
 	public Connection getConnect() throws Exception
 	{
 		FileInputStream fin=new FileInputStream("dbCred.properties");
@@ -23,25 +15,7 @@ public class connectionDatabase
 		String USER=pro.getProperty("user");
 		String PASS=pro.getProperty("pass");
 		Class.forName(JDBC_DRIVER);
-		Connection con= DriverManager.getConnection(DB_URL,USER,PASS);
+		con= DriverManager.getConnection(DB_URL,USER,PASS);
 		return	con;
-	}
-	public void closeConnection(connectionDatabase c , Statement stmt) throws Exception
-	{
-		stmt.close();
-		c.getConnect().close();
-	}
-	public void runQuery(String query) throws Exception
-	{
-		stmt = null;
-		if(con == null)
-		{
-			stmt = getConnect().createStatement();
-			stmt.execute(query);
-			closeConnection(this, stmt);
-			return;
-		}
-		stmt.execute(query);
-		closeConnection(this, stmt);
 	}
 }

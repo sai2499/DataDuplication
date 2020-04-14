@@ -1,17 +1,14 @@
 package Project;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.sql.*;
+import java.util.*;
 
 public class deleteData
 {
     public static connectionDatabase con=null;
     public static Scanner sc=null;
     public static RetrieveIDs rid=null;
-    public static Map<String,Integer> mapCount = new HashMap<>();
-
+    public static Map<String,Integer> mapCountFile = new HashMap<>();
+    public static Map<String,Integer> mapCountUser= new HashMap<>();
     public static void deleteFile(int UserId) throws Exception
     {
         System.out.println("---------------------------Delete File---------------------------");
@@ -30,38 +27,102 @@ public class deleteData
         PreparedStatement deleteFiledetailsTable = con.getConnect().prepareStatement("delete from fileDetails where userFileId=?");
         deleteFiledetailsTable.setInt(1, fileId);
         deleteFiledetailsTable.addBatch();
-        PreparedStatement pstmt = con.getConnect().prepareStatement("select * from shaTable");
-        ResultSet rs = pstmt.executeQuery();
+        PreparedStatement pstmtShaCount = con.getConnect().prepareStatement("select * from shaTable");
+        ResultSet rs = pstmtShaCount.executeQuery();
         int count = 0;
         while (rs.next()) {
-            mapCount.put(rs.getString(1), rs.getInt(2));
+            mapCountFile.put(rs.getString(1), rs.getInt(2));
         }
-        for (int i = 0; i < sha256.length; i++) {
-            if (mapCount.containsKey(sha256[i])) {
-                count = mapCount.get(sha256[i]);
-                if (count <= 1) {
+        for (int i = 0; i < sha256.length; i++)
+        {
+            if (mapCountFile.containsKey(sha256[i]))
+            {
+                count = mapCountFile.get(sha256[i]);
+                if (count <= 1)
+                {
                     deleteShaTable.setString(1, sha256[i]);
                     deleteShaTable.addBatch();
-                } else {
+                }
+                else
+                {
                     count--;
                     updateCount.setInt(1, count);
                     updateCount.setString(2, sha256[i]);
                     updateCount.addBatch();
                 }
-            } else {
+            }
+            else
+            {
                 System.out.print("nothing found");
             }
         }
         deleteHashTable.setInt(1,fileId);
         deleteHashTable.addBatch();
-        int[] deleteShaTablexe=deleteShaTable.executeBatch();
-        int[] updatecountexe=updateCount.executeBatch();
-        int[] deleteFiledetailsTablexe=deleteFiledetailsTable.executeBatch();
-        int[] deleteUserFileTablexe=deleteUserFileTable.executeBatch();
-        int[] deleteHashTablexe=deleteHashTable.executeBatch();
+        int[] deleteShaTableExe=deleteShaTable.executeBatch();
+        int[] updateCountExe=updateCount.executeBatch();
+        int[] deleteFileDetailsTableExe=deleteFiledetailsTable.executeBatch();
+        int[] deleteUserFileTableExe=deleteUserFileTable.executeBatch();
+        int[] deleteHashTableExe=deleteHashTable.executeBatch();
     }
     public static void deleteUser(int userId) throws Exception
     {
-
+        int count=0;
+        con=new connectionDatabase();
+        System.out.println("---------------------------Delete User---------------------------");
+        rid=new RetrieveIDs();
+        Integer[] allFileId=rid.retrieveAllFileId(userId);
+        String[] allShaValue=rid.retrieveAllShaValue(userId);
+        PreparedStatement deleteFromUserTable=con.getConnect().prepareStatement("delete from userTable where userId=?");
+        PreparedStatement deleteFromUserFileTable=con.getConnect().prepareStatement("delete from userFile where userId=?");
+        PreparedStatement deleteShaTable = con.getConnect().prepareStatement("delete from shaTable where sha256Value=?");
+        PreparedStatement deleteFileDetailsTable=con.getConnect().prepareStatement("delete from fileDetails where userFileId=?");
+        PreparedStatement deleteHashTable=con.getConnect().prepareStatement("delete from hashTable where userFileId=?");
+        PreparedStatement updateCount = con.getConnect().prepareStatement("update shaTable set shacount=? where sha256Value=?");
+        PreparedStatement retreiveShaValue=con.getConnect().prepareStatement("select * from shaTable");
+        deleteFromUserTable.setInt(1,userId);
+        deleteFromUserFileTable.setInt(1,userId);
+        deleteFromUserTable.addBatch();
+        deleteFromUserFileTable.addBatch();
+        ResultSet rs=retreiveShaValue.executeQuery();
+        while(rs.next())
+        {
+            mapCountUser.put(rs.getString(1),rs.getInt(2));
+        }
+        for(int i=0;i<allShaValue.length;i++)
+        {
+            if (mapCountFile.containsKey(allShaValue[i]))
+            {
+                count = mapCountFile.get(allShaValue[i]);
+                if (count <= 1)
+                {
+                    deleteShaTable.setString(1, allShaValue[i]);
+                    deleteShaTable.addBatch();
+                }
+                else
+                {
+                    count--;
+                    updateCount.setInt(1, count);
+                    updateCount.setString(2, allShaValue[i]);
+                    updateCount.addBatch();
+                }
+            }
+            else
+            {
+                System.out.print("nothing found");
+            }
+        }
+        for(int i=0;i<allFileId.length;i++)
+        {
+            deleteHashTable.setInt(1,allFileId[i]);
+            deleteFileDetailsTable.setInt(1,allFileId[i]);
+            deleteHashTable.addBatch();
+            deleteFileDetailsTable.addBatch();
+        }
+        int[] deleteShaTableExe=deleteShaTable.executeBatch();
+        int[] updateCountExe=updateCount.executeBatch();
+        int[] deleteFileDetailsTableExe=deleteFileDetailsTable.executeBatch();
+        int[] deleteHashTableExe=deleteHashTable.executeBatch();
+        int[] deleteFromUserFileTableExe=deleteFromUserFileTable.executeBatch();
+        int[] deleteFromUserTableExe=deleteFromUserTable.executeBatch();
     }
 }
