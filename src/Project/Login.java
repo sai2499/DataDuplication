@@ -1,37 +1,24 @@
 package Project;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Login {
 	
-	public boolean checklog(String user,String pass) throws Exception
+	public boolean checkLog(String user,String pass) throws Exception
 	{		
 		connectionDatabase c = new connectionDatabase();
-		Statement stmt = null;
-		String query="SELECT * FROM login WHERE username = '"+ user + "' AND passwords = '" + pass + "'";
-		System.out.println(query);
-		try
+		PreparedStatement pstmtCheck=c.getConnect().prepareStatement("select * from userTable where userName=? and passwords=?");
+		pstmtCheck.setString(1,user);
+		pstmtCheck.setString(2,pass);
+		ResultSet rs = pstmtCheck.executeQuery();
+		if (rs.next())
 		{
-			stmt = c.getConnect().createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-            if (rs.next())
-            {
-            	c.closeConnection(c, stmt);
-            	return true;
-            } 
-            else 
-            {
-            	c.closeConnection(c, stmt);
-            	return false;
-            }
+			return true;
 		}
-		catch(Exception e)
-		{ 
-			//Handle errors for JDBC 
-			e.printStackTrace();
-		}
-		c.closeConnection(c, stmt);
-		return false;
+		else
+		{
+
+        	return false;
+        }
 	}
 }

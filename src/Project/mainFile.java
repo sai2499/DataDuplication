@@ -5,30 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
-public class mainFile {
-	
+public class mainFile
+{
+	public static connectionDatabase con=null;
 	public static Map<Integer, ArrayList<String>> map = new HashMap<Integer, ArrayList<String>>();
 	public static Map<String, Integer> map4count = new HashMap<String,Integer>();
 	public static String username;
 	public static Scanner sc;
 	public static int userId=0;
-	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public static void main(String[] args) throws Exception
+	{
 		sc = new Scanner(System.in);
 		System.out.print("ENTER USERNAME : ");
 		username = sc.next();
 		System.out.print("ENTER PASSWORD : ");
 		String password = sc.next();
-		
 		Login login = new Login();
-		if(login.checklog(username, password))
+		if(login.checkLog(username, password))
 		{
 			//USER MENU
-			connectionDatabase c = new connectionDatabase();
-			PreparedStatement pstmt=c.getConnect().prepareStatement("select userId from userTable where userName=?");
-			pstmt.setString(1,username);
-			ResultSet rst=pstmt.executeQuery();
+			con= new connectionDatabase();
+			PreparedStatement pstmtCheck=con.getConnect().prepareStatement("select userId from userTable where userName=?");
+			pstmtCheck.setString(1,username);
+			ResultSet rst=pstmtCheck.executeQuery();
 			while(rst.next())
 			{
 				userId=rst.getInt(1);
@@ -37,44 +36,40 @@ public class mainFile {
 		}
 		else
 		{
+			con=new connectionDatabase();
 			System.out.println("Invalid Credentials or User Not Exist: Do you want to register(0/1)");
-			
 			int ch=sc.nextInt();
-			
-			switch(ch){
-			
+			switch(ch)
+			{
 			case 0:
 				System.out.println("Thank You");
 				break;
-
-				case 1:
+			case 1:
 				System.out.println("Enter the name: ");
 				String name=sc.next();
 				System.out.println("Enter the pass: ");
 				String passWord=sc.next();
 				System.out.println("Enter the email: ");
 				String email=sc.next();
-				String query = "INSERT INTO userTable (userName,passWord,emailId) VALUES('"
-								+ name + "' , '" + passWord +"' , '"
-								+ email + "');";
-				String query1="insert into login (userName,passwords) values ('"+ name + "' , '" + passWord +"');";
-				connectionDatabase c = new connectionDatabase();
-				c.runQuery(query);
-				c.runQuery(query1);
-				PreparedStatement pstmt=c.getConnect().prepareStatement("select userId from userTable where userName=?");
-				pstmt.setString(1,name);
-				ResultSet rst=pstmt.executeQuery();
+				PreparedStatement pstmtUserTable=con.getConnect().prepareStatement("insert into userTable (userName,passwords,emailId) values (?,?,?)");
+				pstmtUserTable.setString(1,name);
+				pstmtUserTable.setString(2,passWord);
+				pstmtUserTable.setString(3,email);
+				int insertValue=pstmtUserTable.executeUpdate();
+				PreparedStatement pstmtUserId=con.getConnect().prepareStatement("select userId from userTable where userName=?");
+				pstmtUserId.setString(1,name);
+				ResultSet rst=pstmtUserId.executeQuery();
 				while(rst.next())
 				{
 					userId=rst.getInt(1);
 				}
-
 				userMenu(userId);
 			
 			default:
 				System.out.println(":: INVALID OPTION ::");
 				break;
-				}
+
+			}
 		}
 		
 	}
@@ -105,5 +100,4 @@ public class mainFile {
 			break;
 		}
 	}
-
 }

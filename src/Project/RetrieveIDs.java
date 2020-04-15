@@ -1,14 +1,13 @@
 package Project;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.sql.*;
+import java.util.*;
 
 public class RetrieveIDs
 {
     public static connectionDatabase con=null;
     public static Scanner sc=null;
+    public static Map<String,Integer> countmap=new HashMap<>();
     public static Integer[] retrieveShaId(int fileId) throws Exception
     {
         con=new connectionDatabase();
@@ -70,6 +69,40 @@ public class RetrieveIDs
         System.out.println("Enter the name of the file: ");
         String fileName=sc.next();
         return fileName;
+    }
+    public static Integer[] retrieveAllFileId(int userId) throws Exception
+    {
+        con=new connectionDatabase();
+        ArrayList<Integer> allFileIdArr=new ArrayList<>();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select userFileId from userFile where userId=?");
+        pstmt.setInt(1,userId);
+        ResultSet rs=pstmt.executeQuery();
+        while(rs.next())
+        {
+            allFileIdArr.add(rs.getInt(1));
+        }
+        Integer[] allFileId=new Integer[allFileIdArr.size()];
+        allFileId=allFileIdArr.toArray(allFileId);
+        return allFileId;
+    }
+    public static String[] retrieveAllShaValue(int userId) throws Exception
+    {
+        con=new connectionDatabase();
+        Integer[] AllFileId=retrieveAllFileId(userId);
+        ArrayList<String> allShaValuesArr=new ArrayList<>();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select sha256 from hashTable where userFileId=?");
+        for(int i=0;i<AllFileId.length;i++)
+        {
+            pstmt.setInt(1,AllFileId[i]);
+            ResultSet rs=pstmt.executeQuery();
+            while(rs.next())
+            {
+                allShaValuesArr.add(rs.getString(1));
+            }
+        }
+        String[] allShaValues=new String[allShaValuesArr.size()];
+        allShaValues=allShaValuesArr.toArray(allShaValues);
+        return allShaValues;
     }
 }
 
