@@ -72,7 +72,7 @@ public class RetrieveIDs
     }
     public static Integer[] retrieveAllFileId(int userId) throws Exception
     {
-        con=new connectionDatabase();
+        con = new connectionDatabase();
         ArrayList<Integer> allFileIdArr=new ArrayList<>();
         PreparedStatement pstmt=con.getConnect().prepareStatement("select userFileId from userFile where userId=?");
         pstmt.setInt(1,userId);
@@ -88,20 +88,27 @@ public class RetrieveIDs
     public static String[] retrieveAllShaValue(int userId) throws Exception
     {
         con=new connectionDatabase();
-        Integer[] AllFileId=retrieveAllFileId(userId);
-        ArrayList<String> allShaValuesArr=new ArrayList<>();
-        PreparedStatement pstmt=con.getConnect().prepareStatement("select sha256 from hashTable where userFileId=?");
-        for(int i=0;i<AllFileId.length;i++)
+        Integer[] AllFileId = retrieveAllFileId(userId);
+        ArrayList<String> allShaValuesArr = new ArrayList<>();
+        PreparedStatement pstmt = con.getConnect().prepareStatement("select sha256 from hashTable where userFileId=?");
+
+        for(int i=0 ; i < AllFileId.length;i++)
         {
-            pstmt.setInt(1,AllFileId[i]);
+            System.out.println("FILE IDS : " + AllFileId[i]);
+
+            pstmt.setInt(1,AllFileId[i]);//1,2
             ResultSet rs=pstmt.executeQuery();
+
             while(rs.next())
             {
                 allShaValuesArr.add(rs.getString(1));
+//                System.out.println("SHA ARRAY LIST : " + allShaValuesArr);
             }
         }
-        String[] allShaValues=new String[allShaValuesArr.size()];
-        allShaValues=allShaValuesArr.toArray(allShaValues);
+
+
+        String[] allShaValues = new String[allShaValuesArr.size()];
+        allShaValues = allShaValuesArr.toArray(allShaValues);
         return allShaValues;
     }
 }
