@@ -85,16 +85,20 @@ public class RetrieveIDs
         allFileId=allFileIdArr.toArray(allFileId);
         return allFileId;
     }
-    public static String[] retrieveAllShaValue(int userFileId) throws Exception
+    public static String[] retrieveAllShaValue(int userId) throws Exception
     {
         con=new connectionDatabase();
+        Integer[] AllFileId=retrieveAllFileId(userId);
         ArrayList<String> allShaValuesArr=new ArrayList<>();
-        PreparedStatement pstmt=con.getConnect().prepareStatement("select sha256 from userFile where userFileId=?");
-        pstmt.setInt(1,userFileId);
-        ResultSet rs=pstmt.executeQuery();
-        while(rs.next())
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select sha256 from hashTable where userFileId=?");
+        for(int i=0;i<AllFileId.length;i++)
         {
-            allShaValuesArr.add(rs.getString(1));
+            pstmt.setInt(1,AllFileId[i]);
+            ResultSet rs=pstmt.executeQuery();
+            while(rs.next())
+            {
+                allShaValuesArr.add(rs.getString(1));
+            }
         }
         String[] allShaValues=new String[allShaValuesArr.size()];
         allShaValues=allShaValuesArr.toArray(allShaValues);

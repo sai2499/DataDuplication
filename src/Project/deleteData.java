@@ -90,9 +90,9 @@ public class deleteData
         }
         for(int i=0;i<allShaValue.length;i++)
         {
-            if (mapCountFile.containsKey(allShaValue[i]))
+            if ( mapCountUser.containsKey(allShaValue[i]))
             {
-                count = mapCountFile.get(allShaValue[i]);
+                count =  mapCountUser.get(allShaValue[i]);
                 if (count <= 1)
                 {
                     deleteShaTable.setString(1, allShaValue[i]);
@@ -100,7 +100,7 @@ public class deleteData
                 }
                 else
                 {
-                    count--;
+                    count=count-1;
                     updateCount.setInt(1, count);
                     updateCount.setString(2, allShaValue[i]);
                     updateCount.addBatch();
