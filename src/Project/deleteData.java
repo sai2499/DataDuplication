@@ -31,9 +31,11 @@ public class deleteData
         PreparedStatement pstmtShaCount = con.getConnect().prepareStatement("select * from shaTable");
         ResultSet rs = pstmtShaCount.executeQuery();
         int count = 0;
-        while (rs.next()) {
+        while (rs.next())
+        {
             mapCountFile.put(rs.getString(1), rs.getInt(2));
         }
+
         for (int i = 0; i < sha256.length; i++)
         {
             if (mapCountFile.containsKey(sha256[i]))
@@ -71,61 +73,61 @@ public class deleteData
         int count=0;
         con=new connectionDatabase();
         System.out.println("---------------------------Delete User---------------------------");
-        rid=new RetrieveIDs();
-        Integer[] allFileId=rid.retrieveAllFileId(userId);
-        String[] allShaValue=rid.retrieveAllShaValue(userId);
-        PreparedStatement deleteFromUserTable=con.getConnect().prepareStatement("delete from userTable where userId=?");
-        PreparedStatement deleteFromUserFileTable=con.getConnect().prepareStatement("delete from userFile where userId=?");
+        rid = new RetrieveIDs();
+        Integer[] allFileId = rid.retrieveAllFileId(userId);//1,2
+        String[] allShaValue = rid.retrieveAllShaValue(userId);
+        PreparedStatement deleteFromUserTable = con.getConnect().prepareStatement("delete from userTable where userId=?");
+        PreparedStatement deleteFromUserFileTable = con.getConnect().prepareStatement("delete from userFile where userId=?");
         PreparedStatement deleteShaTable = con.getConnect().prepareStatement("delete from shaTable where sha256Value=?");
-        PreparedStatement deleteFileDetailsTable=con.getConnect().prepareStatement("delete from fileDetails where userFileId=?");
-        PreparedStatement deleteHashTable=con.getConnect().prepareStatement("delete from hashTable where userFileId=?");
-        PreparedStatement updateCount = con.getConnect().prepareStatement("update shaTable set shacount=? where sha256Value=?");
-        PreparedStatement retreiveShaValue=con.getConnect().prepareStatement("select * from shaTable");
+        PreparedStatement deleteFileDetailsTable = con.getConnect().prepareStatement("delete from fileDetails where userFileId=?");
+        PreparedStatement deleteHashTable = con.getConnect().prepareStatement("delete from hashTable where userFileId=?");
+        PreparedStatement updateCount = con.getConnect().prepareStatement("update shaTable set shacount = ? where sha256Value = ?");
+        PreparedStatement retreiveShaValue = con.getConnect().prepareStatement("select * from shaTable");
         deleteFromUserTable.setInt(1,userId);
         deleteFromUserFileTable.setInt(1,userId);
         deleteFromUserTable.addBatch();
         deleteFromUserFileTable.addBatch();
-        ResultSet rs=retreiveShaValue.executeQuery();
+
+        ResultSet rs = retreiveShaValue.executeQuery();
+
         while(rs.next())
         {
             mapCountUser.put(rs.getString(1),rs.getInt(2));
         }
-        for(int i=0;i<allShaValue.length;i++)
+
+        for(int i = 0 ; i < allShaValue.length ; i++)
         {
-            if ( mapCountUser.containsKey(allShaValue[i]))
+            count =  mapCountUser.get(allShaValue[i]);
+            System.out.println(allShaValue[i] + "::" + count);
+            if (count == 1)
             {
-                count =  mapCountUser.get(allShaValue[i]);
-                if (count <= 1)
-                {
-                    deleteShaTable.setString(1, allShaValue[i]);
-                    deleteShaTable.addBatch();
-                }
-                else
-                {
-                    count=count-1;
-                    updateCount.setInt(1, count);
-                    updateCount.setString(2, allShaValue[i]);
-                    updateCount.addBatch();
-                }
+                deleteShaTable.setString(1, allShaValue[i]);
+                deleteShaTable.addBatch();
             }
             else
             {
-                System.out.print("nothing found");
+                count--;
+                updateCount.setInt(1, count);
+                updateCount.setString(2, allShaValue[i]);
+                mapCountUser.put(allShaValue[i] , mapCountUser.get(allShaValue[i])-1);
+                updateCount.addBatch();
             }
         }
-        for(int i=0;i<allFileId.length;i++)
+
+        for(int i=0;i < allFileId.length;i++)
         {
-            deleteHashTable.setInt(1,allFileId[i]);
-            deleteFileDetailsTable.setInt(1,allFileId[i]);
+            deleteHashTable.setInt(1 , allFileId[i]);
+            deleteFileDetailsTable.setInt(1 , allFileId[i]);
             deleteHashTable.addBatch();
             deleteFileDetailsTable.addBatch();
         }
-        int[] deleteShaTableExe=deleteShaTable.executeBatch();
-        int[] updateCountExe=updateCount.executeBatch();
-        int[] deleteFileDetailsTableExe=deleteFileDetailsTable.executeBatch();
-        int[] deleteHashTableExe=deleteHashTable.executeBatch();
-        int[] deleteFromUserFileTableExe=deleteFromUserFileTable.executeBatch();
-        int[] deleteFromUserTableExe=deleteFromUserTable.executeBatch();
+
+        int[] deleteShaTableExe = deleteShaTable.executeBatch();
+        int[] updateCountExe = updateCount.executeBatch();
+        int[] deleteFileDetailsTableExe = deleteFileDetailsTable.executeBatch();
+        int[] deleteHashTableExe = deleteHashTable.executeBatch();
+        int[] deleteFromUserFileTableExe = deleteFromUserFileTable.executeBatch();
+        int[] deleteFromUserTableExe = deleteFromUserTable.executeBatch();
     }
 
     public static void deleteVersion(int userId) throws Exception
