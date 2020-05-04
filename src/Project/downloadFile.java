@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class downloadFile extends mainFile
+public class downloadFile
 {
     public static connectionDatabase con=null;
     public static Scanner sc=null;

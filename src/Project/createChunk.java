@@ -4,7 +4,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class createChunk extends uploadFile
+public class createChunk
 {
 
 		public connectionDatabase con = null;
@@ -12,12 +12,14 @@ public class createChunk extends uploadFile
 		public int mult; // this will hold the p^n value
 		int[] buffer; // circular buffer - reading from file stream
 		int buffptr;
+		public Map<Integer, ArrayList<String>> map = new HashMap<Integer, ArrayList<String>>();
+		public ArrayList<String> array_of_file_sha = new ArrayList<>();
 		Map<String,Integer> map4Count = new HashMap<>();
 		StringBuilder string_w = new StringBuilder();
 		InputStream is;
 		
 		
-		public void createChunks(int fileId) throws Exception
+		public void createChunks(int fileId,String fileLocation) throws Exception
 		{
 			int mask = 1 << 13;
 			mult = 1;

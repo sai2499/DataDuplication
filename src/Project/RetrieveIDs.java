@@ -104,5 +104,52 @@ public class RetrieveIDs
         allShaValues=allShaValuesArr.toArray(allShaValues);
         return allShaValues;
     }
+
+    public static int retrieveVersionNo(int fileId) throws Exception
+    {
+        con=new connectionDatabase();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select MAX(versionNo) from userFile where versionOf=?");
+        pstmt.setInt(1,fileId);
+        ResultSet rs=pstmt.executeQuery();
+        int versionNo=0;
+        while(rs.next())
+        {
+            versionNo=rs.getInt(1);
+        }
+        return versionNo;
+    }
+
+    public static int retrieveVersionId(int fileId,int versionNo) throws Exception
+    {
+        con=new connectionDatabase();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select userFileId from userFile where versionOf=? and versionNo=?");
+        pstmt.setInt(1,fileId);
+        pstmt.setInt(2,versionNo);
+        ResultSet rs=pstmt.executeQuery();
+        int versionId=0;
+        while(rs.next())
+        {
+            versionId=rs.getInt(1);
+        }
+        return versionId;
+    }
+
+    public static int showFileVersion(int fileId) throws Exception
+    {
+        con =new connectionDatabase();
+
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName,versionNo from userFile where versionOf=?");
+        pstmt.setInt(1,fileId);
+        ResultSet rs=pstmt.executeQuery();
+        System.out.println("VersionNo"+"\tFilename");
+        while(rs.next())
+        {
+            System.out.println(rs.getInt(2)+"\t"+rs.getString(1));
+        }
+        System.out.println("Enter the Version number to delete: ");
+        sc=new Scanner(System.in);
+        int VersionNo=sc.nextInt();
+        return VersionNo;
+    }
 }
 

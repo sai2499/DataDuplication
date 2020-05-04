@@ -8,7 +8,7 @@ import java.util.*;
 public class mainFile
 {
 	public static connectionDatabase con=null;
-	public static Map<Integer, ArrayList<String>> map = new HashMap<Integer, ArrayList<String>>();
+
 	public static Map<String, Integer> map4count = new HashMap<String,Integer>();
 	public static String username;
 	public static Scanner sc;
@@ -76,7 +76,7 @@ public class mainFile
 	
 	public static void userMenu(int userId) throws Exception
 	{
-		System.out.println("Welcome "+ username + "\nPlease Select a option\n\t1. Upload File\n\t2. Download File\n\t3. Delete File\n\t4. Delete User\n\t5. updateFile\n\t6. Exit");
+		System.out.println("Welcome "+ username + "\nPlease Select a option\n\t1. Upload File\n\t2. Download File\n\t3. Delete File\n\t4. Delete Version\n\t5. Delete User\n\t6. updateFile\n\t7. Exit");
 		int ch=sc.nextInt();
 		switch(ch)
 		{
@@ -90,10 +90,13 @@ public class mainFile
 			deleteData.deleteFile(userId);
 			break;
 		case 4:
-			deleteData.deleteUser(userId);
+			deleteData.deleteVersion(userId);
 			break;
 		case 5:
-			//uploadFile.update();
+			deleteData.deleteUser(userId);
+			break;
+		case 6:
+			UpdateFile.update(userId);
 			break;
 		default:
 			System.out.println("Invalid Input");
