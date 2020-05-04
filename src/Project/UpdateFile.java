@@ -22,7 +22,7 @@ public class UpdateFile
         String fileName=sc.nextLine();
         int fileId=rid.retrieveFileId(userId,fileName);
         int versionNo=rid.retrieveVersionNo(fileId);
-        String newFileLocation="test/"+fileName;
+        String newFileLocation="File/"+fileName;
         if(checkFileName(userId,fileName))
         {
             LocalDateTime myDateObj = LocalDateTime.now();

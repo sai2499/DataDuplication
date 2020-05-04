@@ -158,5 +158,22 @@ public class RetrieveIDs
         int VersionNo=sc.nextInt();
         return VersionNo;
     }
+    public static String showVerionFiles(int userId) throws Exception
+    {
+        sc=new Scanner(System.in);
+        con=new connectionDatabase();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName from userFile where userId=? and versionNo=?");
+        pstmt.setInt(1,userId);
+        pstmt.setInt(2,1);
+        ResultSet rs=pstmt.executeQuery();
+        while(rs.next())
+        {
+            System.out.println(rs.getString(1));
+        }
+        System.out.println("Enter the name of the file: ");
+        String fileName=sc.next();
+        return fileName;
+    }
+
 }
 
