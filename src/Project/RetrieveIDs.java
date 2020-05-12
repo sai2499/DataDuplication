@@ -55,20 +55,36 @@ public class RetrieveIDs
         sha256arr=arrSha.toArray(sha256arr);
         return sha256arr;
     }
-    public static String showFiles(int UserId) throws Exception
+    public static int showFiles(int UserId) throws Exception
     {
         sc=new Scanner(System.in);
         con=new connectionDatabase();
-        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName from userFile where userId=?");
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileId,fileName from userFile where userId=?");
         pstmt.setInt(1,UserId);
         ResultSet rs=pstmt.executeQuery();
+        System.out.println("FileId"+"\tFileName");
         while(rs.next())
         {
-            System.out.println(rs.getString(1));
+            System.out.println(rs.getInt(1)+"\t"+rs.getString(2));
         }
-        System.out.println("Enter the name of the file: ");
-        String fileName=sc.next();
-        return fileName;
+        System.out.println("Enter the name of the fileId: ");
+        int fileid=sc.nextInt();
+        return fileid;
+    }
+
+    public static String showFilesName(int fileId) throws Exception
+    {
+        String FileName=null;
+        sc=new Scanner(System.in);
+        con=new connectionDatabase();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName from userFile where fileId=?");
+        pstmt.setInt(1,fileId);
+        ResultSet rs=pstmt.executeQuery();
+        if(rs.next())
+        {
+            FileName=rs.getString(1);
+        }
+        return FileName;
     }
     public static Integer[] retrieveAllFileId(int userId) throws Exception
     {
@@ -102,7 +118,6 @@ public class RetrieveIDs
             while(rs.next())
             {
                 allShaValuesArr.add(rs.getString(1));
-//                System.out.println("SHA ARRAY LIST : " + allShaValuesArr);
             }
         }
 

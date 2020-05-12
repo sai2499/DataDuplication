@@ -13,7 +13,8 @@ public class deleteData
     {
         System.out.println("---------------------------Delete File---------------------------");
         System.out.println("Files you have: ");
-        String fileName = rid.showFiles(UserId);
+        int fileID = rid.showFiles(UserId);
+        String fileName=rid.showFilesName(fileID);
         int fileId = rid.retrieveFileId(UserId, fileName);
         Integer[] shaId = rid.retrieveShaId(fileId);
         String[] sha256 = rid.retrieveSha(shaId);

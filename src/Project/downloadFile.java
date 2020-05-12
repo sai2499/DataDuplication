@@ -16,7 +16,8 @@ public class downloadFile
         rid=new RetrieveIDs();
         System.out.println("---------------------------Download File---------------------------");
         System.out.println("Files you have: ");
-        String fileName=rid.showFiles(UserId);
+        int file_Id=rid.showFiles(UserId);
+        String fileName=rid.showFilesName(file_Id);
         int fileId=rid.retrieveFileId(UserId,fileName);
         Integer[] shaId=rid.retrieveShaId(fileId);
         String[] sha256=rid.retrieveSha(shaId);
