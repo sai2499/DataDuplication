@@ -59,7 +59,7 @@ public class RetrieveIDs
     {
         sc=new Scanner(System.in);
         con=new connectionDatabase();
-        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileId,fileName from userFile where userId=?");
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select userFileId,fileName from userFile where userId=?");
         pstmt.setInt(1,UserId);
         ResultSet rs=pstmt.executeQuery();
         System.out.println("FileId"+"\tFileName");
@@ -77,7 +77,7 @@ public class RetrieveIDs
         String FileName=null;
         sc=new Scanner(System.in);
         con=new connectionDatabase();
-        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName from userFile where fileId=?");
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select fileName from userFile where userfileId=?");
         pstmt.setInt(1,fileId);
         ResultSet rs=pstmt.executeQuery();
         if(rs.next())

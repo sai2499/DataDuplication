@@ -9,6 +9,7 @@ public class deleteData
     public static RetrieveIDs rid=null;
     public static Map<String,Integer> mapCountFile = new HashMap<>();
     public static Map<String,Integer> mapCountUser= new HashMap<>();
+    public static File_opr fileop;
     public static void deleteFile(int UserId) throws Exception
     {
         System.out.println("---------------------------Delete File---------------------------");
@@ -45,6 +46,7 @@ public class deleteData
                 {
                     deleteShaTable.setString(1, sha256[i]);
                     deleteShaTable.addBatch();
+                    fileop.deleteFile(sha256[i]);
                 }
                 else
                 {
@@ -162,6 +164,7 @@ public class deleteData
                 {
                     deleteShaTable.setString(1, sha256[i]);
                     deleteShaTable.addBatch();
+
                 }
                 else
                 {

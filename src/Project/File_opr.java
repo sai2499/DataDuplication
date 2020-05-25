@@ -4,6 +4,7 @@ import java.io.*;
 
 public class File_opr
 {
+
 	public static void createFile(int hash_val,String word, String hash256val) throws IOException
 	{
 		String filename = "chunks/"+hash256val;
@@ -11,6 +12,7 @@ public class File_opr
 		fw.write(word);
 		fw.close();
 	}
+
 	public static void createOriginal(String[] sha256,String fileName) throws Exception
 	{
 		String str;
@@ -31,4 +33,9 @@ public class File_opr
 		fw.close();
 	}
 
+	public static void deleteFile(String shaValue) throws Exception
+	{
+		String filename = "chunks/"+shaValue;
+		boolean file=new File(filename).delete();
+	}
 }
