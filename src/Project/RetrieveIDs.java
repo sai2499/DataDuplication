@@ -189,6 +189,18 @@ public class RetrieveIDs
         String fileName=sc.next();
         return fileName;
     }
-
+    public static int getVersionNo(int fileId) throws Exception
+    {
+        int versionno=0;
+        con=new connectionDatabase();
+        PreparedStatement pstmt = con.getConnect().prepareStatement("select versionNo from userfile where userFileId=?");
+        pstmt.setInt(1,fileId);
+        ResultSet rs=pstmt.executeQuery();
+        while(rs.next())
+        {
+            versionno=rs.getInt(1);
+        }
+        return versionno;
+    }
 }
 

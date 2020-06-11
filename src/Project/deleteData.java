@@ -14,9 +14,7 @@ public class deleteData
     {
         System.out.println("---------------------------Delete File---------------------------");
         System.out.println("Files you have: ");
-        int fileID = rid.showFiles(UserId);
-        String fileName=rid.showFilesName(fileID);
-        int fileId = rid.retrieveFileId(UserId, fileName);
+        int fileId = rid.showFiles(UserId);
         Integer[] shaId = rid.retrieveShaId(fileId);
         String[] sha256 = rid.retrieveSha(shaId);
         con = new connectionDatabase();

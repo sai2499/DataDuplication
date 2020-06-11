@@ -17,10 +17,12 @@ public class downloadFile
         System.out.println("---------------------------Download File---------------------------");
         System.out.println("Files you have: ");
         int file_Id=rid.showFiles(UserId);
-        String fileName=rid.showFilesName(file_Id);
-        int fileId=rid.retrieveFileId(UserId,fileName);
-        Integer[] shaId=rid.retrieveShaId(fileId);
+        String fileNameTry=rid.showFilesName(file_Id);
+        Integer[] shaId=rid.retrieveShaId(file_Id);
         String[] sha256=rid.retrieveSha(shaId);
+        String[] changeName=fileNameTry.split("[_.]");
+        int len=changeName.length-1;
+        String fileName = changeName[0]+"(v"+rid.getVersionNo(file_Id)+")"+"."+changeName[len];
         File_opr.createOriginal(sha256,fileName);
     }
 }
