@@ -6,14 +6,16 @@ public class uploadFile
 	public static connectionDatabase con = null;
 	public static String fileLocation;
 	public static String fileName;
-
+	public static UpdateFileLength fileLen=null;
 	public static Scanner sc=null;
+	public static RetrieveIDs rid=null;
 	public static void insertIntoUserFile(int userId) throws Exception
 	{
 		System.out.println("Enter the name of the file: ");
 		sc = new Scanner(System.in);
 		fileName=sc.next();
 		con=new connectionDatabase();
+		fileLen=new UpdateFileLength();
 		PreparedStatement pstmt=con.getConnect().prepareStatement("insert into userFile (userId,fileName,versionNo) values(?,?,?)");
 		pstmt.setInt(1,userId);
 		pstmt.setString(2,fileName);
@@ -24,8 +26,11 @@ public class uploadFile
 		updatePtmt.setInt(1,fileId);
 		updatePtmt.setInt(2,fileId);
 		updatePtmt.executeUpdate();
+		fileLen.LengthOfOriginalFile(fileId,fileName);
 		upload(fileId,fileName);
 		insertIntoFileTable(fileId,fileName);
+		String[] shaValue=rid.retrieveAllShaValue(fileId);
+		fileLen.LengthOfChunkFile(shaValue);
 	}
 	public static void upload(int fileId,String fileName) throws Exception
 	{
