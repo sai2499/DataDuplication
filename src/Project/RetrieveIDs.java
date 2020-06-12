@@ -202,5 +202,20 @@ public class RetrieveIDs
         }
         return versionno;
     }
+    public static String[] retrieveShaValue(int fileId) throws Exception
+    {
+        con=new connectionDatabase();
+        ArrayList<String> arr=new ArrayList<String>();
+        PreparedStatement pstmt=con.getConnect().prepareStatement("select sha256 from hashTable where userFileId=?");
+        pstmt.setInt(1,fileId);
+        ResultSet rs=pstmt.executeQuery();
+        while(rs.next())
+        {
+            arr.add(rs.getString(1));
+        }
+        String[] testing = new String[arr.size()];
+        testing=arr.toArray(testing);
+        return testing;
+    }
 }
 

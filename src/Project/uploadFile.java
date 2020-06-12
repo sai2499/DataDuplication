@@ -29,7 +29,7 @@ public class uploadFile
 		fileLen.LengthOfOriginalFile(fileId,fileName);
 		upload(fileId,fileName);
 		insertIntoFileTable(fileId,fileName);
-		String[] shaValue=rid.retrieveAllShaValue(fileId);
+		String[] shaValue=rid.retrieveShaValue(fileId);
 		fileLen.LengthOfChunkFile(shaValue);
 	}
 	public static void upload(int fileId,String fileName) throws Exception

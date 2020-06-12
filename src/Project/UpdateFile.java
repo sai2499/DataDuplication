@@ -10,6 +10,7 @@ public class UpdateFile
 {
     public static RetrieveIDs rid=null;
     public static connectionDatabase con=null;
+    public static UpdateFileLength fileLen=null;
     public static uploadFile up=null;
     public static Scanner sc=null;
     public static void update(int userId) throws Exception
@@ -18,6 +19,7 @@ public class UpdateFile
         rid=new RetrieveIDs();
         sc=new Scanner(System.in);
         con=new connectionDatabase();
+        fileLen=new UpdateFileLength();
         System.out.println("Enter the name of the file: ");
         String fileName=sc.nextLine();
         int fileId=rid.retrieveFileId(userId,fileName);
@@ -42,6 +44,10 @@ public class UpdateFile
             d.createChunks(versionId,newFileLocation);
             System.out.println(versionId);
             up.insertVersionFileTable(versionId);
+            fileLen.LengthOfOriginalFile(versionId,fileName);
+            System.out.println(versionId);
+            String[] shaValue=rid.retrieveShaValue(versionId);
+            fileLen.LengthOfChunkFile(shaValue);
         }
         else
         {
@@ -64,7 +70,4 @@ public class UpdateFile
             return false;
         }
     }
-
-
-
 }
